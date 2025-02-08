@@ -1,0 +1,30 @@
+﻿@model IEnumerable<BookingRIo.Models.Apartment>
+
+<h2>Oda Listesi</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>RoomNumber</th>
+            <th>RoomType</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var apartment in Model)
+        {
+            <tr>
+                <td>@apartment.RoomNumber</td>
+                <td>@apartment.RoomType</td>
+                <td>@apartment.Price</td>
+                <td>@apartment.Status</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Apartment", new { id = apartment.Id })">Edit</a> |
+                    <a href="@Url.Action("Delete", "Apartment", new { id = apartment.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("Create", "Apartment")">Add New Room</a>
