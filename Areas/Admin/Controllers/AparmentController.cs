@@ -3,9 +3,10 @@ using BookingRIo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingRIo.Areas.Admin
+namespace BookingRIo.Areas.Admin.Controllers
 {
     [Area("Admin")]
+   // [Controller()]
     public class ApartmentController : Controller
     {
         private readonly AppDbContext _context;
@@ -13,6 +14,7 @@ namespace BookingRIo.Areas.Admin
         {
             _context = context;
         }
+
         /*  // [Area("Admin")]
 
          public IActionResult Index()
@@ -35,28 +37,34 @@ namespace BookingRIo.Areas.Admin
 
         public async Task<IActionResult> Index()
         {
-            var apartments = await _context.apartments.ToListAsync();
+           var apartments = await _context.apartments.ToListAsync();
             return View(apartments);
         }
 
-
+        [HttpGet]
         public IActionResult Create()
+        
         {
-            return View();
+           
+            return View(new Apartment());
         }
 
+      
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Apartment apartment)
-        {
-            if (ModelState.IsValid)
+        public IActionResult Create(/*[Bind("RoomNumber,RoomType,Price")]*/ Apartment apartment)
+        {  
+
+            if (!ModelState.IsValid)
             {
-                _context.Add(apartment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Please fill in all fields";
+                return View(apartment); 
             }
-            return View(apartment);
+
+            _context.apartments.Add(apartment);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
+
 
 
         public async Task<IActionResult> Edit(int id)
@@ -122,11 +130,4 @@ namespace BookingRIo.Areas.Admin
             return RedirectToAction(nameof(Index));
         }
     }
-
-
-
-
-
-
 }
-

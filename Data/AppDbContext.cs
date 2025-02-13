@@ -1,5 +1,6 @@
 ﻿using BookingRIo.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace BookingRIo.Data
 {
@@ -11,6 +12,6 @@ namespace BookingRIo.Data
         }
 
         public DbSet<Apartment> apartments { get; set; }
-        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Booking> bookings { get; set; }
     }
 }

@@ -8,7 +8,7 @@
         public DateTime CheckOutDate { get; set; }
         public string GuestName { get; set; }
         public string GuestEmail { get; set; }
-        public decimal TotalAmount { get; set; }
+        public string TotalAmount { get; set; }
 
         public Apartment Apartment { get; set; } 
     }

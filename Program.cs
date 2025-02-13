@@ -1,7 +1,16 @@
+using BookingRIo.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<AppDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+}
+);
+//builder.Services.AddScoped<AppDbContext>();
 
 var app = builder.Build();
 
@@ -23,10 +32,12 @@ app.UseAuthentication();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute(
-        name: "dashboard",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapAreaControllerRoute(
+        name: "admin",
+        areaName: "Admin",
+        pattern: "Admin/{controller=Home}/{action=Index}/{id?}");
 });
+
 
 app.MapControllerRoute(
     name: "default",
