@@ -28,3 +28,19 @@
     </tbody>
 </table>
 <a href=" /Admin/Apartment/Create">Create </a>.("Create", "Apartment")">Add New Room</a>
+
+<!-- SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    var successMessage = "@TempData["Success"]";
+    if (successMessage) {
+        Swal.fire({
+            title: "Deleted!",
+            text: successMessage,
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+    }
+</script>
+

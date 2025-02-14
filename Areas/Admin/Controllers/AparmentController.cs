@@ -110,6 +110,25 @@ namespace BookingRIo.Areas.Admin.Controllers
         }
 
 
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    var apartment = await _context.apartments.FindAsync(id);
+        //    if (apartment == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(apartment);
+        //}
+
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var apartment = await _context.apartments.FindAsync(id);
+        //    _context.apartments.Remove(apartment);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
         public async Task<IActionResult> Delete(int id)
         {
             var apartment = await _context.apartments.FindAsync(id);
@@ -117,17 +136,14 @@ namespace BookingRIo.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(apartment);
-        }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var apartment = await _context.apartments.FindAsync(id);
             _context.apartments.Remove(apartment);
             await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Apartment deleted successfully!";
+
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
