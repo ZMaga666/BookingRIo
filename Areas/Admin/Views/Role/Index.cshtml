@@ -1,0 +1,32 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityRole>
+
+
+<table class="table">
+    <a href="/Admin/Role/CreateRole" class="btn btn-outline-success">Create</a>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <th>1</th>
+                    <td>@role.Name</td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <p class="alert alert-danger">No roles found.</p>
+        }
+
+
+
+    </tbody>
+</table>

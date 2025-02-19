@@ -1,12 +1,15 @@
 ﻿using BookingRIo.Data;
 using BookingRIo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity;
 
 namespace BookingRIo.Areas.Admin.Controllers
 {
     [Area("Admin")]
-   // [Controller()]
+   // [Authorize(Roles = "Admin, Moderator")] 
+    // [Controller()]
     public class ApartmentController : Controller
     {
         private readonly AppDbContext _context;
@@ -37,27 +40,27 @@ namespace BookingRIo.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-           var apartments = await _context.apartments.ToListAsync();
+            var apartments = await _context.apartments.ToListAsync();
             return View(apartments);
         }
 
         [HttpGet]
         public IActionResult Create()
-        
+
         {
-           
+
             return View(new Apartment());
         }
 
-      
+
         [HttpPost]
         public IActionResult Create(/*[Bind("RoomNumber,RoomType,Price")]*/ Apartment apartment)
-        {  
+        {
 
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please fill in all fields";
-                return View(apartment); 
+                return View(apartment);
             }
 
             _context.apartments.Add(apartment);
@@ -83,7 +86,7 @@ namespace BookingRIo.Areas.Admin.Controllers
         {
             if (id != apartment.Id)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Invalid apartment ID." });
             }
 
             if (ModelState.IsValid)
@@ -92,22 +95,25 @@ namespace BookingRIo.Areas.Admin.Controllers
                 {
                     _context.Update(apartment);
                     await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "Apartment updated successfully!" }); 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_context.apartments.Any(e => e.Id == apartment.Id))
                     {
-                        return NotFound();
+                        return Json(new { success = false, message = "Apartment not found." });
                     }
                     else
                     {
-                        throw;
+                        return Json(new { success = false, message = "Error updating apartment." });
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(apartment);
+
+            return Json(new { success = false, message = "Invalid data. Please check the inputs." });
         }
+
 
 
         //public async Task<IActionResult> Delete(int id)
@@ -129,6 +135,12 @@ namespace BookingRIo.Areas.Admin.Controllers
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
+
+
+
+
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var apartment = await _context.apartments.FindAsync(id);
@@ -142,8 +154,11 @@ namespace BookingRIo.Areas.Admin.Controllers
 
             TempData["Success"] = "Apartment deleted successfully!";
 
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
+
+
+
 
     }
 }

@@ -8,7 +8,7 @@
             <th>RoomType</th>
             <th>Price</th>
             <th>Status</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -18,29 +18,46 @@
                 <td>@apartment.RoomNumber</td>
                 <td>@apartment.RoomType</td>
                 <td>@apartment.Price</td>
-                @* <td>@apartment.Status</td> *@
                 <td>
-                    <a href="@Url.Action("Edit", "Apartment", new { id = apartment.Id })">Edit</a> |
-                    <a href="@Url.Action("Delete", "Apartment", new { id = apartment.Id })">Delete</a>
+                    <a href="@Url.Action("Edit", "Apartment", new { id = apartment.Id })" class="btn btn-primary">Edit</a>
+                    <button class="btn btn-danger" onclick="confirmDelete(@apartment.Id)">Delete</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<a href=" /Admin/Apartment/Create">Create </a>.("Create", "Apartment")">Add New Room</a>
 
-<!-- SweetAlert library -->
+<a href="/Admin/Apartment/Create" class="btn btn-success">Add New Room</a>
+
+<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-    var successMessage = "@TempData["Success"]";
-    if (successMessage) {
+    function confirmDelete(apartmentId) {
         Swal.fire({
-            title: "Deleted!",
-            text: successMessage,
-            icon: "success",
-            confirmButtonText: "OK"
+            title: "Are you sure?",
+            text: "You will not be able to recover this room!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/Admin/Apartment/Delete/' + apartmentId, { method: 'GET' })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire("Deleted!", "Apartment deleted successfully.", "success")
+                                .then(() => {
+                                    window.location.href = '/Admin/Apartment/Index';
+                                });
+                        } else {
+                            Swal.fire("Error!", "Something went wrong!", "error");
+                        }
+                    });
+            }
         });
     }
 </script>
+
 

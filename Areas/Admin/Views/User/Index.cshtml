@@ -1,0 +1,53 @@
+﻿@model List<User>
+@inject Microsoft.AspNetCore.Identity.UserManager<User> userManager;
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Email</th>
+            <th scope="col">Fullname</th>
+            <th scope="col">Roles</th>
+            <th scope="col">Settings</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            int count = 1;
+
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <th scope="row">@count</th>
+                    <td>
+                        @user.Email
+                    </td>
+                    <td>
+                        @user.FirstName @user.LastName
+                    </td>
+                    <td>
+                        @{
+                            var roles = await userManager.GetRolesAsync(user);
+                            foreach (var role in roles)
+                            {
+                                <span>@role</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a href="/Admin/user/addrole/@user.Id" class="btn btn-warning">Edit</a>
+                        <a href="/Admin/user/addrole/" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                count++;
+            }
+
+
+        }
+        else
+        {
+            <h5>Melumat yoxdu</h5>
+        }
+    </tbody>
+</table>

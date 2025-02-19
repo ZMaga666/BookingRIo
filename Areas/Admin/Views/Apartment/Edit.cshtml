@@ -1,0 +1,86 @@
+﻿@model BookingRIo.Models.Apartment
+
+@{
+    ViewData["Title"] = "Edit Apartment";
+}
+
+<h2>Edit Apartment</h2>
+
+<form id="editApartmentForm">
+    <input type="hidden" asp-for="Id" id="Id" />
+
+    <div class="form-group">
+        <label asp-for="RoomNumber" class="control-label"></label>
+        <input asp-for="RoomNumber" class="form-control" id="RoomNumber" />
+        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RoomType" class="control-label"></label>
+        <input asp-for="RoomType" class="form-control" id="RoomType" />
+        <span asp-validation-for="RoomType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price" class="control-label"></label>
+        <input asp-for="Price" type="number" class="form-control" id="Price" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status" class="control-label"></label>
+        <select asp-for="Status" class="form-control" id="Status">
+            <option value="Available">Available</option>
+            <option value="Booked">Booked</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <br />
+
+    <button type="button" class="btn btn-primary" id="saveEdit">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#saveEdit").click(function () {
+            var apartmentData = {
+                Id: $("#Id").val(),
+                RoomNumber: $("#RoomNumber").val(),
+                RoomType: $("#RoomType").val(),
+                Price: $("#Price").val(),
+                Status: $("#Status").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("Edit", "Apartment")',
+                type: "POST",
+                data: apartmentData,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() }, 
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: "Updated!",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.href = "/Admin/Apartment/Index"; 
+                        });
+                    } else {
+                        Swal.fire("Error!", response.message, "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Something went wrong!", "error");
+                }
+            });
+        });
+    });
+</script>

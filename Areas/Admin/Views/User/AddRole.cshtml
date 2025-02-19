@@ -1,0 +1,22 @@
+﻿@model BookingRIo.Areas.Admin.ViewModels.UserRoleVM
+
+<div class="container">
+    <form method="post">
+        <div class="form-group">
+            <input value="@Model.User.Email" type="text" class="form-control col-6" disabled />
+            <input value="@Model.User.Id" type="hidden" name="userId" class="form-control col-6" />
+        </div>
+        <div class="form-group">
+            <select name="roleName" class="form-control">
+                @foreach (var role in Model.Roles)
+                {
+                        <option value="@role.Name">@role.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-warning" value="Update" />
+        </div>
+    </form>
+
+</div>
