@@ -1,13 +1,9 @@
 ﻿@model BookingRIo.Models.Apartment
 
-@{
-    ViewData["Title"] = "Edit Apartment";
-}
+<h2>Create New Apartment</h2>
 
-<h2>Edit Apartment</h2>
-
-<form id="editApartmentForm">
-    <input type="hidden" asp-for="Id" id="Id" />
+<form id="createApartmentForm" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
 
     <div class="form-group">
         <label asp-for="RoomNumber" class="control-label"></label>
@@ -22,9 +18,9 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Price" class="control-label"></label>
-        <input asp-for="Price" type="number" class="form-control" id="Price" />
-        <span asp-validation-for="Price" class="text-danger"></span>
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" type="number" class="form-control" id="Amount" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -36,42 +32,42 @@
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
-    <br />
+    <div class="form-group">
+        <label class="control-label">Upload Image</label>
+        <input type="file" name="ImageFile" class="form-control" id="ImageFile" accept="image/*" />
+    </div>
 
-    <button type="button" class="btn btn-primary" id="saveEdit">Save</button>
+    <br />
+    <button type="button" class="btn btn-primary" id="saveCreate">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
-<!-- Include jQuery -->
+<!-- jQuery Kütüphanesi -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- SweetAlert2 -->
+<!-- SweetAlert2 Kütüphanesi -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
-        $("#saveEdit").click(function () {
-            var apartmentData = {
-                Id: $("#Id").val(),
-                RoomNumber: $("#RoomNumber").val(),
-                RoomType: $("#RoomType").val(),
-                Price: $("#Price").val(),
-                Status: $("#Status").val()
-            };
+        $("#saveCreate").click(function () {
+            var formData = new FormData($("#createApartmentForm")[0]);
 
             $.ajax({
-                url: '@Url.Action("Edit", "Apartment")',
+                url: '@Url.Action("Create", "Apartment")',
                 type: "POST",
-                data: apartmentData,
-                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() }, 
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({
-                            title: "Updated!",
+                            title: "Success!",
                             text: response.message,
                             icon: "success",
                             confirmButtonText: "OK"
                         }).then(() => {
-                            window.location.href = "/Admin/Apartment/Index"; 
+                            window.location.href = "/Admin/Apartment/Index";
                         });
                     } else {
                         Swal.fire("Error!", response.message, "error");

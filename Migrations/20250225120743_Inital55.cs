@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookingRIo.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial33 : Migration
+    public partial class Inital55 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace BookingRIo.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoomNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RoomType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<int>(type: "int", nullable: true),
+                    Amount = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -77,7 +77,7 @@ namespace BookingRIo.Migrations
                     CheckOutDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GuestName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GuestEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalAmount = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    TotalAmount = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

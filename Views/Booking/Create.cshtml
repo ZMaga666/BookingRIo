@@ -1,0 +1,76 @@
+﻿@model BookingRIo.Models.Booking
+
+@{
+    ViewData["Title"] = "New Booking";
+    Layout = "_BookingLayout";
+}
+
+<h2>New Booking</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="ApartmentId">Select Room</label>
+        <select class="form-control" id="ApartmentId" name="ApartmentId" required>
+            @foreach (var apt in ViewBag.Apartments)
+            {
+                <option value="@apt.Id">@apt.RoomNumber (@apt.RoomType) - @apt.Amount.ToString("C") / Night</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="CheckInDate">Check-in Date</label>
+        <input type="date" class="form-control" id="CheckInDate" name="CheckInDate" required />
+    </div>
+
+    <div class="form-group">
+        <label for="CheckOutDate">Check-out Date</label>
+        <input type="date" class="form-control" id="CheckOutDate" name="CheckOutDate" required />
+    </div>
+
+    <div class="form-group">
+        <label for="GuestName">Guest Name</label>
+        <input type="text" class="form-control" name="GuestName" required />
+    </div>
+
+    <div class="form-group">
+        <label for="GuestEmail">Guest Email</label>
+        <input type="email" class="form-control" name="GuestEmail" required />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+</form>
+
+<script>
+    document.getElementById("ApartmentId").addEventListener("change", function () {
+        var apartmentId = this.value;
+        if (apartmentId) {
+            fetch(`/Booking/CheckAvailability?apartmentId=` + apartmentId)
+                .then(response => response.json())
+                .then(data => {
+                    var checkInInput = document.getElementById("CheckInDate");
+                    var checkOutInput = document.getElementById("CheckOutDate");
+
+                    checkInInput.removeAttribute("disabled");
+                    checkOutInput.removeAttribute("disabled");
+                    checkInInput.value = "";
+                    checkOutInput.value = "";
+
+                    let disabledDates = data.map(d => {
+                        let start = new Date(d.CheckIn).toISOString().split("T")[0];
+                        let end = new Date(d.CheckOut).toISOString().split("T")[0];
+                        return { start, end };
+                    });
+
+                    checkInInput.addEventListener("input", function () {
+                        let selectedDate = new Date(this.value);
+                        let isDisabled = disabledDates.some(d => selectedDate >= new Date(d.start) && selectedDate < new Date(d.end));
+                        if (isDisabled) {
+                            alert("This date is already booked. Please select another date.");
+                            this.value = "";
+                        }
+                    });
+
+                    checkOutInput.addEventListener("input", function () {
+                        let selectedDate = new Date(this.value);
+                        let isDisabled = disabledDates.some(d => se

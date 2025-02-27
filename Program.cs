@@ -21,6 +21,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddTransient<EmailSender>();
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

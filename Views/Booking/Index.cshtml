@@ -1,0 +1,42 @@
+﻿@model IEnumerable<BookingRIo.Models.Booking>
+@{
+    ViewData["Title"] = "Reservation List";
+    Layout = "_BookingLayout";
+}
+
+<h2>Reservations</h2>
+<a asp-action="Create" class="btn btn-primary">Add New Reservation</a>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Room</th>
+            <th>Client</th>
+            <th>Entry Date</th>
+            <th>Relase Date</th>
+            <th>Amount</th>
+            <th>Process</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Apartment.RoomNumber (@item.Apartment.RoomType)</td>
+                <td>@item.GuestName</td>
+                <td>@item.CheckInDate.ToShortDateString()</td>
+                <td>@item.CheckOutDate.ToShortDateString()</td>
+                <td>@item.TotalAmount.ToString("C")</td>
+                <td>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

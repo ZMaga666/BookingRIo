@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingRIo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250219125327_UpInit")]
-    partial class UpInit
+    [Migration("20250227104222_AddApartmentImagePath")]
+    partial class AddApartmentImagePath
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,11 @@ namespace BookingRIo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Price")
-                        .HasColumnType("int");
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoomNumber")
                         .HasColumnType("nvarchar(max)");
@@ -75,9 +78,8 @@ namespace BookingRIo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TotalAmount")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("TotalAmount")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

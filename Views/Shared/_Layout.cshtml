@@ -45,9 +45,15 @@
                             <a asp-controller="Contact" asp-action="Index">Contact </a>
                         </li>
                         <li>
-                            <a asp-controller="/Apartment" asp-action="Index">Dashboard </a>
+                            <a  asp-area = "Admin" asp-controller="Apartment" asp-action="Index">Dashboard </a>
                         </li>
-                            
+                        <li>
+                            <a   asp-controller="Auth" asp-action="Login">Login</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Booking" asp-action="Index">Reservation</a>
+                        </li>
+
 
 
                     </ul>

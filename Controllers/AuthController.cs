@@ -11,7 +11,10 @@ using BookingRIo.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
+
 
 namespace BookingRIo.Controllers;
 
@@ -22,15 +25,19 @@ public class AuthController : Controller
     private readonly SignInManager<User> _signInManager;
     private readonly IHttpContextAccessor _httpContext;
     private readonly ILogger<AuthController> _logger;
+    private readonly EmailSender _emailSender;
+    private readonly IConfiguration _configuration;
 
 
-    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContext, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger)
+    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContext, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, EmailSender emailSender, IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _httpContext = httpContext;
         _roleManager = roleManager;
         _logger = logger;
+        _emailSender = emailSender;
+        _configuration = configuration;
     }
     public IActionResult Login()
     {
@@ -58,10 +65,8 @@ public class AuthController : Controller
 
         return View();
     }
-    //GET, POST
-    //AOP
 
-    [HttpGet] // Attribute
+    [HttpGet] 
     public IActionResult Register()
     {
         return View();
@@ -99,6 +104,8 @@ public class AuthController : Controller
         return View();
     }
 
+    [HttpGet]
+    [AllowAnonymous]
     public IActionResult Forgot()
     {
         return View();
@@ -106,42 +113,63 @@ public class AuthController : Controller
 
 
     [HttpPost]
-    [AllowAnonymous]
-    public async Task<IActionResult> ForgotPassword(ForgotPasswordVIewModel model)
+    public async Task<IActionResult> ForgotPassword(string email)
     {
-        if (ModelState.IsValid)
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
         {
-            // Find the user by email
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            // If the user is found AND Email is confirmed
-            if (user.Email != null && await _userManager.IsEmailConfirmedAsync(user))
-            {
-                // Generate the reset password token
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-                // Build the password reset link
-                var passwordResetLink = Url.Action("ResetPassword", "Account",
-                        new { email = model.Email, token = token }, Request.Scheme);
-
-                // Log the password reset link
-                _logger.Log(LogLevel.Warning, passwordResetLink);
-
-                // Send the user to Forgot Password Confirmation view
-                TempData["Feedback"] = "Please check your email";
-                return View("ForgotPasswordConfirmation");
-            }
-            else
-            {
-                TempData["Feedback"] = "This email cannot exist";
-            }
-            // To avoid account enumeration and brute force attacks, don't
-            // reveal that the user does not exist or is not confirmed
             return View("ForgotPasswordConfirmation");
         }
 
-        return View(model);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var resetLink = Url.Action("ResetPassword", "Account", new { token, email = user.Email }, Request.Scheme);
+
+        await _emailSender.SendEmailAsync(user.Email, "Reset Your Password", resetLink);
+
+        return View("ForgotPasswordConfirmation");
     }
 
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ResetPassword(string token, string email)
+    {
+        if (token == null || email == null)
+        {
+            ModelState.AddModelError("", "Invalid password reset token.");
+            return View("ResetPassword");
+        }
+        return View();
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(string email, string token, string newPassword, string confirmPassword)
+    {
+        if (newPassword != confirmPassword)
+        {
+            ModelState.AddModelError("", "Passwords do not match.");
+            return View();
+        }
+
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return View("ResetPasswordConfirmation");
+        }
+
+        var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+        if (result.Succeeded)
+        {
+            return View("ResetPasswordConfirmation");
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Description);
+        }
+        return View();
+    }
     public IActionResult Logout()
     {
 

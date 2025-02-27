@@ -1,5 +1,4 @@
 ﻿<body style="background-image: url(/assets/media/bg-image.jpg);">
-
     <main>
         <section id="page-title">
             <h3>
@@ -12,10 +11,8 @@
         <section id="service-about">
             <div class="container">
                 <div class="row">
-                   <div class="col-10">
-                    <!--   <partial name="_SearchForm" model="new SearchModel()" /> -->
+                    <div class="col-10">
                         <h1>A Home in the Heart of the City</h1>
-                        
                     </div>
                     <div class="col-10">
                         <div class="location">
@@ -80,7 +77,13 @@
             </div>
         </section>
     </main>
-    <script src="https://kit.fontawesome.com/fad17f25d7.js" crossorigin="anonymous"></script>
 
+    <!-- Kullanıcı Adı ve Rolü Gösterme -->
+    <div style="position: absolute; top: 20px; left: 20px; background-color: rgba(0, 0, 0, 0.5); color: white; padding: 10px;">
+        <p>Welcome, @ViewBag.UserName!</p>
+        <p>Your role: @ViewBag.UserRole</p>
+    </div>
+
+    <script src="https://kit.fontawesome.com/fad17f25d7.js" crossorigin="anonymous"></script>
     <script src="assets/JS/main.js"></script>
 </body>

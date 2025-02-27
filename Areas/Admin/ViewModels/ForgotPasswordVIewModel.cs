@@ -2,7 +2,7 @@
 
 namespace BookingRIo.Areas.Admin.ViewModels
 {
-    public class ForgotPasswordVIewModel
+    public class ForgotPasswordViewModel
     {
         [Required]
         [EmailAddress]
