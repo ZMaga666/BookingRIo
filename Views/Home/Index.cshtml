@@ -1,84 +1,34 @@
-﻿<body style="background-image: url(/assets/media/bg-image.jpg);">
+﻿@model List<BookingRIo.Models.Apartment>
+
+<body style="background-image: url(/assets/media/bg-image.jpg);">
     <main>
         <section id="page-title">
-            <h3>
-                Be My Guest
-            </h3>
-            <h1>
-                Welcome to Rio
-            </h1>
+            <h3>Be My Guest</h3>
+            <h1>Welcome to Rio</h1>
         </section>
-        <section id="service-about">
+
+        <section id="apartments">
             <div class="container">
                 <div class="row">
-                    <div class="col-10">
-                        <h1>A Home in the Heart of the City</h1>
-                    </div>
-                    <div class="col-10">
-                        <div class="location">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div class="image">
-                                            <img src="/assets/media/location.jpg" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="col-4 title">
-                                        <h1>Location</h1>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="map">
-                                            <p>
-                                                Conveniently located just opposite Leblon Beach in Ipanema,
-                                                our apartment will sweep you into the charm and excitements of Rio!
-                                                Dine at one of our neighborhood’s many world-renowned restaurants,
-                                                enjoy fresh-squeezed juices from one of the colourful stalls along the
-                                                beach,
-                                                and don’t miss live bossy-nova show in one of the local bars.
-                                            </p>
-                                            <a asp-controller="Home" asp-action="RedirectToMap">View Map</a>
-                                        </div>
-                                    </div>
-                                    <div class="feedback">
-                                        <div class="container">
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <div class="image">
-                                                        <img src="/assets/media/feedback.jpg" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-8">
-                                                    <div class="content">
-                                                        <h1>
-                                                            About Camila & Tiago
-                                                        </h1>
-                                                        <div class="seperator">
-                                                            <div></div>
-                                                        </div>
-                                                        <p>
-                                                            Hi, my name is Camila and I’m a nutritionist from the south
-                                                            of Brazil.
-                                                            I moved to the beautiful Ipanema neighborhood two years ago
-                                                            with my husband,
-                                                            Tiago. We live in a homie highrise just off the Leblon
-                                                            Beach,
-                                                            but in the summer we travel!
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                    @foreach (var apartment in Model)
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <img src="@(string.IsNullOrEmpty(apartment.ImagePath) ? "/assets/media/default.jpg" : apartment.ImagePath)" class="card-img-top" alt="Apartment Image">
+                                <div class="card-body">
+                                    <h5 class="card-title">@apartment.RoomNumber</h5>
+                                    <p class="card-text">@apartment.RoomType</p>
+                                    <p class="card-text"><strong>Price:</strong> $@apartment.Amount</p>
+                                    <a href="#" class="btn btn-primary">Book Now</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Kullanıcı Adı ve Rolü Gösterme -->
     <div style="position: absolute; top: 20px; left: 20px; background-color: rgba(0, 0, 0, 0.5); color: white; padding: 10px;">
         <p>Welcome, @ViewBag.UserName!</p>
         <p>Your role: @ViewBag.UserRole</p>

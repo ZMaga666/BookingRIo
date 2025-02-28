@@ -2,30 +2,34 @@
 using Microsoft.AspNetCore.Mvc;
 using BookingRIo.Models;
 using Microsoft.AspNetCore.Identity;
+using BookingRIo.Data;
 
 namespace BookingRIo.Controllers
-{   
+{
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager;
-        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager)
+        private readonly AppDbContext _dbContext;
+
+        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, AppDbContext dbContext)
         {
             _logger = logger;
             _userManager = userManager;
+            _dbContext = dbContext;
         }
 
         public IActionResult Index()
         {
-            // Kullanıcı bilgilerini al
-            var userName = User.Identity.Name;  // Kullanıcı adı
-            var userRole = User.IsInRole("Admin") ? "Admin" : (User.IsInRole("Moderator") ? "Moderator" : "User");  // Kullanıcı rolü
+            var userName = User.Identity.Name;
+            var userRole = User.IsInRole("Admin") ? "Admin" : (User.IsInRole("Moderator") ? "Moderator" : "User");
 
-            // Kullanıcı adını ve rolünü View'a göndermek
             ViewBag.UserName = userName;
             ViewBag.UserRole = userRole;
 
-            return View();
+            // Apartmanları getir
+            var apartments = _dbContext.apartments.ToList();
+            return View(apartments);
         }
 
         public IActionResult Privacy()

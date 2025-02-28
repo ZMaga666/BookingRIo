@@ -2,7 +2,7 @@
 
 <h2>Create New Apartment</h2>
 
-<form id="createApartmentForm" enctype="multipart/form-data">
+<form id="EditApartmentForm" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
     <div class="form-group">
@@ -50,16 +50,20 @@
 <script>
     $(document).ready(function () {
         $("#saveCreate").click(function () {
-            var formData = new FormData($("#createApartmentForm")[0]);
+
+            debugger;
+
+            var formData = new FormData($("#EditApartmentForm")[0]);
 
             $.ajax({
-                url: '@Url.Action("Create", "Apartment")',
+                url: '@Url.Action("Edit", "Apartment")',
                 type: "POST",
                 data: formData,
                 contentType: false,
                 processData: false,
                 headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                 success: function (response) {
+                    console.log(response)
                     if (response.success) {
                         Swal.fire({
                             title: "Success!",
